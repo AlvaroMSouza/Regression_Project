@@ -32,22 +32,34 @@ I have explored the target variable and features for each house, and relationshi
 ### Target Variable - Price
 Since we need to predict the price, the price variable would be our target variable. From the histogram it was possible to understand that there is a longer right tail. Therefore, I applied a log transformation of the price variable in order to have a distribution close to normal distribution.
 
+![Analyze_target_variable](https://github.com/user-attachments/assets/5bbaf477-4753-4e82-83e2-19e464dcb745)
+
 ### Numeric Features - Bedrooms, Bathrooms, Square Meters, Building Age, Floors
 In order to understand the numeric features and analyse each one of them, I decided to use histograms and boxplots to visualize the distribution of each feature and their outliers. At the end I also decided to do a heatmap to analyse the correlation between the numeric features and the target variable.
 
 By the histograms from the figure below we can conclude that the distribution of **Bedrooms** for the Houses is basically the same throught the different numbers of bedrooms. We can see this pattern on the rest of the numeric features where every feature has a uniform distribution. 
 
+![Analyze_numeric_features](https://github.com/user-attachments/assets/adede12c-6ead-4346-82a8-741c99380f0f)
+
 From the heatmap, we can conclude that there is strong linear positive relationship between the target variable **Price** and the feature **Square Meters**. The rest of the variables don't present any correlation neither positive or negative.
+
+![Correlation_between_numeric_features](https://github.com/user-attachments/assets/d53908e0-bd3f-4c9d-a52a-a34ace7a3f65)
+
 
 ### Relationship between Numeric Features VS Target
 Taking into consideration the heatmap presented and now the scatterplot, we can see a strong linear relationship between **Price** and **Square Meters**. When it comes to the relationship between **Price** and the other features, besides **Building Age**, we can see clusters which is normal taking into consideration the uniform distribution. At last, the numeric feature **Building Age** and the target varible **Price** don't have any relationship.
 
+![Analyze_numeric_features_vs_target](https://github.com/user-attachments/assets/98c45e56-7ab5-416e-806e-eb91c716fc38)
 
 ### Categorical Features - Address, Neighborhood, Garden, Garage, Property  Type, Heating Type, Balcony, Interior Style, View, Materials, Building Status
 From the chart called *Analyze_categorical_features_yes_no.png* and *Analyze_categorical_features_rest.png* it is possible to observe that all categorical features have uniform distribution, besides **Balcony** where the most frequent category is having a house with a balcony.
 
+![Analyze_categorical_features_yes_no](https://github.com/user-attachments/assets/ab91710a-77fe-4c0b-b935-a3576ce1681d)
+
 ### Relationship between Categorical Features VS Target
 I investigated the relationship between the categorical features and the target variable and what I conclude was since most of the features have a uniform distribution their isn't a big difference between each category from a feature and the target variable. 
+
+![Analyze_categorical_features_vs_target](https://github.com/user-attachments/assets/87f6b9eb-13fa-4e21-aac1-e040b96cbefd)
 
 ## Model Fitting and Evaluation
 Predicting the price is a regression problem in machine learning. I am choosing the Linear Regression model, Random Forest regression model and Neural Network in order to see the diferences between this models.
@@ -65,6 +77,8 @@ To enable modelling, we chose  as features Neighborhood, Bedrooms, Bathrooms, Sq
 ### Linear Regression
 I obtain a Linear Regression Model with R squared of 0.71 and RMSE of 548754.956. After that I decided to analyze the Feature Importance and what I found was that the Features: **Square Meters**, **Property Type**, **Garage** where the most relevant features, while **Bathrooms** and **Heating Type** didn't contribute for training. After taking those features from the dataset and retrain the model I conclude that the change was almost non-existent, so it **is not necessary**. 
 
+![Feature_importance_linear_regression](https://github.com/user-attachments/assets/d95ea378-ef71-448b-b2ac-5b93c42822da)
+
 ### Random Forest 
 Random Forest Regressor outperformed the Linear Regression by having a R squared of 0.895 and RMSE of 281639.987. **Random Forest is a better solution** compared with the Linear Regression.
 
@@ -73,3 +87,12 @@ I built a neural network with a simple architecture with four fully connected li
 
 ![Compare Loss per poch](https://github.com/user-attachments/assets/3f2684c0-7cfc-410f-90e3-5db15166e556)
 
+## Conclusions
+This project allow me to explore and test my abilities to do EDA and to train and test different models. Besides that, I want to conclude by saying that the best model was the Neural Network and it is the optimal model to be choosen by the user for this task.
+
+## Future work
+It would be interesting to do Feature Engineering so we would have more important feature to train the model and for them to perform even better. 
+Develop visualizations to compare the model performances.
+
+
+Developed by: [Author](https://github.com/AlvaroMSouza) 
