@@ -9,9 +9,6 @@ import torch
 import torch.nn as nn
 from torch.utils.data import DataLoader, TensorDataset
 import torch.optim as optim
-from torchmetrics import MeanSquaredError
-
-from torchviz import make_dot
 
 from sklearn.linear_model import LinearRegression
 from sklearn.ensemble import RandomForestRegressor
@@ -62,7 +59,7 @@ fig, axes = plt.subplots(1, 2, figsize=(12, 6))
 sns.histplot(df['Price (£)'], color='blue', kde=True, ax=axes[0]).set(title='The Distribution of Target Variable - Price')
 sns.histplot(df['Price (£)'],log_scale=True,color='gray', ax=axes[1]).set(title='The Distribution of Target Variable - Price (Log Scale)')
 plt.savefig('images/Analyze_target_variable.png', format='png')
-#plt.show()
+plt.show()
 
 # --------------//----------------
 
@@ -70,7 +67,7 @@ plt.savefig('images/Analyze_target_variable.png', format='png')
 numeric = df[['Bedrooms', 'Bathrooms', 'Square Meters', 'Building Age', 'Floors', 'Price (£)']]
 sns.heatmap(numeric.corr(), annot=True, cmap='coolwarm').set(title='Correlation Matrix between Numerical Features')
 plt.savefig('images/Correlation_between_numeric_features.png', format='png')
-#plt.show()
+plt.show()
 
 
 # Numeric Features - Bedrooms, Bathrooms, Square Meters, Building Age, Floors
@@ -113,7 +110,7 @@ ax41 = fig.add_subplot(spec[4, 1])
 sns.boxplot(x='Floors', data=df, color='#7E1037', ax=ax41).set(title='Floors Distribution')
 
 plt.savefig('images/Analyze_numeric_features.png', format='png')
-#plt.show()
+plt.show()
 
 # --------------//----------------
 
@@ -142,7 +139,7 @@ ax11 = fig.add_subplot(spec[1, 1])
 sns.scatterplot(x='Floors', y='Price (£)', data=df, ax=ax11).set(title='Price vs Floors')
 
 plt.savefig('images/Analyze_numeric_features_vs_target.png', format='png')
-#plt.show()
+plt.show()
 
 # --------------//----------------
 
@@ -152,7 +149,7 @@ sns.countplot(x='Garden', data=df, color='gray', ax=axes[0]).set(title='Count of
 sns.countplot(x='Garage', data=df, color='gray', ax=axes[1]).set(title='Count of Houses by Garage')
 sns.countplot(x='Balcony', data=df, color='gray', ax=axes[2]).set(title='Count of Houses by Balcony')
 plt.savefig('images/Analyze_categorical_features_yes_no.png', format='png')
-#plt.show()
+plt.show()
 
 # --------------//----------------
 
@@ -185,7 +182,7 @@ ax21 = fig.add_subplot(spec[2, 1])
 sns.countplot(x='Building Status', data=df, color='gray', ax=ax21).set(title='Count of Houses by Building Status')
 
 plt.savefig('images/Analyze_categorical_features_rest.png', format='png')
-#plt.show()
+plt.show()
 
 # --------------//----------------
 
@@ -218,7 +215,7 @@ ax21 = fig.add_subplot(spec[2, 1])
 sns.boxplot(x='Building Status', y='Price (£)', data=df, color='gray', ax=ax21).set(title='Distribution of Price by Building Status')
 
 plt.savefig('images/Analyze_categorical_features_vs_target.png', format='png')
-#plt.show()
+plt.show()
 
 
 # Model Fitting and Evaluation
@@ -260,7 +257,7 @@ plt.bar(resultdict.keys(),resultdict.values(), alpha=0.5,color='gray')
 plt.xticks(rotation='vertical')
 plt.title('Feature Importance in Linear Regression Model')
 plt.savefig('images/Feature_importance_linear_regression.png', format='png')
-#plt.show()
+plt.show()
 
 # --------------//----------------
 
@@ -306,48 +303,66 @@ print(f"Using {device} device")
 train_dataset = TensorDataset(torch.tensor(X_train.to_numpy()).float(), torch.tensor(y_train.to_numpy()).float())
 train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True)
 
-import NN_Model
-net = NN_Model.NN_Model(input_size=X_train.shape[1], hidden_size=64, output_size=1)
+test_dataset = TensorDataset(torch.tensor(X_test.to_numpy()).float(), torch.tensor(y_test.to_numpy()).float())
+test_loader = DataLoader(test_dataset, batch_size=32)
 
-# Visualize the model
-y = net(X_train)
-dot = make_dot(y.mean(), params=dict(net.named_parameters()), show_attrs=True, show_saved=True)
-dot.render('images/Neural Network Architecture', format='png')
+import NN_Model
+net = NN_Model.NN_Model(input_size=X_train.shape[1], hidden_size=16, output_size=1)
+
+
+print(net)
 
 learning_rate = 0.001
 criterion = nn.MSELoss()
 optimizer = optim.Adam(net.parameters(), lr=learning_rate)
 
+# Initialize lists to store losses for each epoch
+train_losses = []
+test_losses = []
 
 # Training loop
-for epoch in range(1000):
+for epoch in range(300):
+    net.train()
     training_loss = 0.0
+    
     for features, labels in train_loader:
-        features, labels = features.to(device), labels.to(device)
+        labels = labels.view(-1, 1)
         optimizer.zero_grad()
         outputs = net(features)
         loss = criterion(outputs, labels)
-        training_loss += loss.item()
         loss.backward()
         optimizer.step()
-    print(f'Epoch {epoch} - Training Loss: {training_loss/len(train_loader)}')
+        training_loss += loss.item()
+    
+    # Average training loss for the epoch
+    avg_training_loss = training_loss / len(train_loader)
+    train_losses.append(avg_training_loss)
+    
+    # Calculate test loss for the epoch
+    net.eval()
+    test_loss = 0.0
+    with torch.no_grad():
+        for features, labels in test_loader:
+            labels = labels.view(-1, 1)
+            outputs = net(features)
+            loss = criterion(outputs, labels)
+            test_loss += loss.item()
+    
+    avg_test_loss = test_loss / len(test_loader)
+    test_losses.append(avg_test_loss)
 
+    # Print progress every 10 epochs
+    if (epoch + 1) % 10 == 0:
+        print(f'Epoch [{epoch + 1}/1000], Train Loss: {avg_training_loss:.4f}, Test Loss: {avg_test_loss:.4f}')
 
-
-# Evaluation
-
-test_dataset = TensorDataset(torch.tensor(X_test.to_numpy()).float(), torch.tensor(y_test.to_numpy()).float())
-test_loader = DataLoader(test_dataset, batch_size=32)
-
-mse = MeanSquaredError()
-
-net.eval()
-with torch.no_grad():
-    for features, labels in test_loader:
-        features, labels = features.to(device), labels.to(device)
-        outputs = net(features)
-        mse.update(outputs, labels)
-
-test_mse = mse.compute()
-print(f'Test MSE: {test_mse:.4f}')
+# Plot training and test losses
+plt.figure(figsize=(10, 6))
+plt.plot(train_losses, label='Training Loss')
+plt.plot(test_losses, label='Test Loss')
+plt.xlabel('Epochs')
+plt.ylabel('Loss')
+plt.title('Training and Test Loss Over Epochs')
+plt.legend()
+plt.savefig('images/Compare_loss_per_epoch.png', format='png')
+plt.show()
 

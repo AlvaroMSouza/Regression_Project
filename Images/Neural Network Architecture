@@ -1,0 +1,126 @@
+digraph {
+	graph [size="12,12"]
+	node [align=left fontname=monospace fontsize=10 height=0.2 ranksep=0.1 shape=box style=filled]
+	2740303867120 [label="
+ ()" fillcolor=darkolivegreen1]
+	2740303999184 -> 2740303861680 [dir=none]
+	2740303861680 [label="self
+ (800, 1)" fillcolor=orange]
+	2740303999184 [label="MeanBackward0
+------------------------------
+self          : [saved tensor]
+self_sym_sizes:       (800, 1)"]
+	2740303999760 -> 2740303999184
+	2740303999760 -> 2742264238048 [dir=none]
+	2742264238048 [label="other
+ (800, 1)" fillcolor=orange]
+	2740303999760 [label="MulBackward0
+---------------------
+other: [saved tensor]
+self :           None"]
+	2740303999472 -> 2740303999760
+	2740303999472 -> 2740303870160 [dir=none]
+	2740303870160 [label="mat1
+ (800, 32)" fillcolor=orange]
+	2740303999472 -> 2742264238208 [dir=none]
+	2742264238208 [label="mat2
+ (32, 1)" fillcolor=orange]
+	2740303999472 [label="AddmmBackward0
+--------------------------------
+alpha           :              1
+beta            :              1
+mat1            : [saved tensor]
+mat1_sym_sizes  :      (800, 32)
+mat1_sym_strides:        (32, 1)
+mat2            : [saved tensor]
+mat2_sym_sizes  :        (32, 1)
+mat2_sym_strides:        (1, 32)"]
+	2740303999280 -> 2740303999472
+	2740303863120 [label="fc3.bias
+ (1)" fillcolor=lightblue]
+	2740303863120 -> 2740303999280
+	2740303999280 [label=AccumulateGrad]
+	2740303999136 -> 2740303999472
+	2740303999136 -> 2740303864160 [dir=none]
+	2740303864160 [label="self
+ (800, 32)" fillcolor=orange]
+	2740303999136 [label="EluBackward0
+---------------------------
+alpha      :            1.0
+input_scale:              1
+scale      :              1
+self       : [saved tensor]"]
+	2740304000048 -> 2740303999136
+	2740304000048 -> 2740303867040 [dir=none]
+	2740303867040 [label="mat1
+ (800, 64)" fillcolor=orange]
+	2740304000048 -> 2740303856880 [dir=none]
+	2740303856880 [label="mat2
+ (64, 32)" fillcolor=orange]
+	2740304000048 [label="AddmmBackward0
+--------------------------------
+alpha           :              1
+beta            :              1
+mat1            : [saved tensor]
+mat1_sym_sizes  :      (800, 64)
+mat1_sym_strides:        (64, 1)
+mat2            : [saved tensor]
+mat2_sym_sizes  :       (64, 32)
+mat2_sym_strides:        (1, 64)"]
+	2740303997936 -> 2740304000048
+	2742332893488 [label="fc2.bias
+ (32)" fillcolor=lightblue]
+	2742332893488 -> 2740303997936
+	2740303997936 [label=AccumulateGrad]
+	2740303998704 -> 2740304000048
+	2740303998704 -> 2740252538448 [dir=none]
+	2740252538448 [label="self
+ (800, 64)" fillcolor=orange]
+	2740303998704 [label="EluBackward0
+---------------------------
+alpha      :            1.0
+input_scale:              1
+scale      :              1
+self       : [saved tensor]"]
+	2740303999424 -> 2740303998704
+	2740303999424 -> 2740303871120 [dir=none]
+	2740303871120 [label="mat1
+ (800, 14)" fillcolor=orange]
+	2740303999424 [label="AddmmBackward0
+--------------------------------
+alpha           :              1
+beta            :              1
+mat1            : [saved tensor]
+mat1_sym_sizes  :      (800, 14)
+mat1_sym_strides:             ()
+mat2            :           None
+mat2_sym_sizes  :       (14, 64)
+mat2_sym_strides:        (1, 14)"]
+	2740303996016 -> 2740303999424
+	2740252793712 [label="fc1.bias
+ (64)" fillcolor=lightblue]
+	2740252793712 -> 2740303996016
+	2740303996016 [label=AccumulateGrad]
+	2740303998752 -> 2740303999424
+	2740303998752 [label=TBackward0]
+	2740303998224 -> 2740303998752
+	2740252794032 [label="fc1.weight
+ (64, 14)" fillcolor=lightblue]
+	2740252794032 -> 2740303998224
+	2740303998224 [label=AccumulateGrad]
+	2740303998512 -> 2740304000048
+	2740303998512 [label=TBackward0]
+	2740303998320 -> 2740303998512
+	2740252793872 [label="fc2.weight
+ (32, 64)" fillcolor=lightblue]
+	2740252793872 -> 2740303998320
+	2740303998320 [label=AccumulateGrad]
+	2740303999568 -> 2740303999472
+	2740303999568 [label=TBackward0]
+	2740303999328 -> 2740303999568
+	2740303866080 [label="fc3.weight
+ (1, 32)" fillcolor=lightblue]
+	2740303866080 -> 2740303999328
+	2740303999328 [label=AccumulateGrad]
+	2740303999184 -> 2740303867120
+}
