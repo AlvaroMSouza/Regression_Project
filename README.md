@@ -69,5 +69,7 @@ I obtain a Linear Regression Model with R squared of 0.71 and RMSE of 548754.956
 Random Forest Regressor outperformed the Linear Regression by having a R squared of 0.895 and RMSE of 281639.987. **Random Forest is a better solution** compared with the Linear Regression.
 
 ### Deep Learning Neural Network
-I built a neural network with a simple architecture with four fully connected linear layers, interspersed with ReLu activation functions. The result I obtain with this model was really good but from the image below I feel like something is not right since the test loss is basically the same as the training loss.
+I built a neural network with a simple architecture with four fully connected linear layers, interspersed with ReLu activation functions. The result I obtain with this model was really good since the training loss and validation loss both decrease and stabilize at a specific point as we can see by the image below.
+
+![Compare Loss per poch](https://github.com/user-attachments/assets/3f2684c0-7cfc-410f-90e3-5db15166e556)
 
