@@ -5,10 +5,13 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 # Regression Problem
+import torch
 import torch.nn as nn
+from torch.utils.data import DataLoader, TensorDataset
 import torch.optim as optim
-from torch.utils.data import Dataset, DataLoader
 from torchmetrics import MeanSquaredError
+
+from torchviz import make_dot
 
 from sklearn.linear_model import LinearRegression
 from sklearn.ensemble import RandomForestRegressor
@@ -289,4 +292,62 @@ print('Random Forest Regressor Root Mean Squared Error: ',np.sqrt(mean_squared_e
 # --------------//----------------
 
 # Deep Learning Model
+
+# Run on GPU if available
+device = (
+    "cuda"
+    if torch.cuda.is_available()
+    else "mps"
+    if torch.backends.mps.is_available()
+    else "cpu"
+)
+print(f"Using {device} device")
+
+train_dataset = TensorDataset(torch.tensor(X_train.to_numpy()).float(), torch.tensor(y_train.to_numpy()).float())
+train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True)
+
+import NN_Model
+net = NN_Model.NN_Model(input_size=X_train.shape[1], hidden_size=64, output_size=1)
+
+# Visualize the model
+y = net(X_train)
+dot = make_dot(y.mean(), params=dict(net.named_parameters()), show_attrs=True, show_saved=True)
+dot.render('images/Neural Network Architecture', format='png')
+
+learning_rate = 0.001
+criterion = nn.MSELoss()
+optimizer = optim.Adam(net.parameters(), lr=learning_rate)
+
+
+# Training loop
+for epoch in range(1000):
+    training_loss = 0.0
+    for features, labels in train_loader:
+        features, labels = features.to(device), labels.to(device)
+        optimizer.zero_grad()
+        outputs = net(features)
+        loss = criterion(outputs, labels)
+        training_loss += loss.item()
+        loss.backward()
+        optimizer.step()
+    print(f'Epoch {epoch} - Training Loss: {training_loss/len(train_loader)}')
+
+
+
+# Evaluation
+
+test_dataset = TensorDataset(torch.tensor(X_test.to_numpy()).float(), torch.tensor(y_test.to_numpy()).float())
+test_loader = DataLoader(test_dataset, batch_size=32)
+
+mse = MeanSquaredError()
+
+net.eval()
+with torch.no_grad():
+    for features, labels in test_loader:
+        features, labels = features.to(device), labels.to(device)
+        outputs = net(features)
+        mse.update(outputs, labels)
+
+test_mse = mse.compute()
+print(f'Test MSE: {test_mse:.4f}')
 
